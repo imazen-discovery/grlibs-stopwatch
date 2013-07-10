@@ -6,8 +6,10 @@ and outputs the results.
 
 The goal is to get a basic idea of just how fast Vips is.
 
-Built against libvips-7.26.3 on Ubuntu 12.04. This is the version of
-libvips included with Ubuntu 12.04.
+For consistency, we use Vagrant to create a development VM and build
+everything there.  The script 'setup.sh' does everything.
 
+Note that the scripts here will checkout and build ORC and Vips from
+sources.  If you do not specify an external directory in which to do
+this, setup.sh will select a default (../vips-build/).
 
-    

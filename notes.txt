@@ -1,0 +1,35 @@
+
+Pre ORC:
+
+c_tests precise32 :) Eh?./shrink 3k.png 90 70 50 20
+# Shrinking 3k.png:
+# 1700 1800 3
+(none)	initializing.	10.000000
+3k.png	90%	2580.000000
+3k.png	70%	2280.000000
+3k.png	50%	770.000000
+3k.png	20%	180.000000
+(none)	Total:	5820.000000
+
+
+c_tests precise32 :) Eh?./shrink 3k.tiff 90 70 50 20
+# Shrinking 3k.tiff:
+# 1700 1800 3
+(none)	initializing.	0.000000
+3k.tiff	90%	440.000000
+3k.tiff	70%	190.000000
+3k.tiff	50%	250.000000
+3k.tiff	20%	70.000000
+(none)	Total:	950.000000
+
+
+c_tests precise32 :) Eh?./shrink 3k-smooth.tiff 90 70 50 20
+# Shrinking 3k-smooth.tiff:
+# 1700 1800 3
+(none)	initializing.	0.000000
+3k-smooth.tiff	90%	380.000000
+3k-smooth.tiff	70%	160.000000
+3k-smooth.tiff	50%	230.000000
+3k-smooth.tiff	20%	80.000000
+(none)	Total:	850.000000
+

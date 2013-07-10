@@ -17,6 +17,7 @@
 #include <stdarg.h>
 #include <assert.h>
 #include <unistd.h>
+#include <math.h>
 
 #include <vips/vips.h>
 
@@ -76,7 +77,7 @@ shrink(int slot, VipsImage *im) {
         const char *nm = resizes[slot].name;
 
         int isize = resizes[slot].sizes[n];
-        double scale = 100.0 / (double)isize;
+        double scale = floor(100.0 / (double)isize);
 
         snprintf(ofname, sizeof(ofname), "%d-%s", isize, 
                  basename(nm)); /* GNU basename, not POSIX */

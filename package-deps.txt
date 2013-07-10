@@ -1,0 +1,26 @@
+# List of packages to load.  Comments are removed with a simple grep.
+
+gettext
+libglib2.0-dev
+gobject-introspection
+gtk-doc-tools
+swig
+libxml2-dev
+#fftw-dev       # Wrong version; needs 3
+libfftw3-dev
+libmagickwand-dev
+liblcms2-dev
+libopenexr-dev
+# libopenslide-dev       # Need 3.3 or later; do we need it?
+libmatio-dev
+libcfitsio3-dev
+libpango1.0-dev
+libpng12-dev
+libtiff4-dev
+libjpeg-dev
+libexif-dev
+#libv4l-dev   # Broken, skipping
+python-dev
+
+libgd-gd2-perl
+imagemagick

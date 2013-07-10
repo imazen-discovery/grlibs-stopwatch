@@ -1,0 +1,10 @@
+# C stuff
+*.o
+core
+TAGS
+
+# Vagrant stuff
+.vagrant
+
+# Process temp. files
+BUILD_DIR
