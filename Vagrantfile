@@ -6,6 +6,7 @@ EXTRA_FOLDER=
 EXTRA_MNT = "/vagrant-extra"
 
 INSTALL_SCRIPT=<<EOF
+apt-get update
 apt-get install -y `egrep -v '^#'  /vagrant/package-deps.txt `
 EOF
 

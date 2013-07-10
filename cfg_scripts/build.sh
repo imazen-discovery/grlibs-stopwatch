@@ -21,3 +21,5 @@ cd libvips
 make
 sudo make install
 
+echo "Running ldconfig:"
+sudo ldconfig
