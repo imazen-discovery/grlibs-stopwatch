@@ -85,7 +85,7 @@ shrink(int slot, VipsImage *im) {
         result = im_open(ofname, "w");
         check(!!result, "Error opening image on %s", ofname);
 
-        timer_start(nm, "%d%%", isize);
+        timer_start(nm, "%d", isize);
         stat = im_shrink(im, result, scale, scale);
         timer_done();
         check(!stat, "Shrink failed: %s", im_error_buffer());

@@ -1,10 +1,13 @@
 
+VIPS=vips
+#VIPS=vips-7.26
+
 CC=gcc
-CFLAGS=-Wall -O -g `pkg-config vips --cflags`
+CFLAGS=-Wall -O -g `pkg-config $(VIPS) --cflags`
 
 LD=gcc
 LDFLAGS=-g
-LIBS=`pkg-config vips --libs`
+LIBS=`pkg-config $(VIPS) --libs`
 
 all: shrink stats benchmark
 

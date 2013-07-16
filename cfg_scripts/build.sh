@@ -23,3 +23,7 @@ sudo make install
 
 echo "Running ldconfig:"
 sudo ldconfig
+
+echo "Installing vips gem:"
+sudo gem install ruby-vips -v 0.3.6
+

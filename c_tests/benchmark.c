@@ -1,6 +1,4 @@
 
-// BROKEN.  Ignore.
-
 #define _GNU_SOURCE     /* Get the GNU version of basename(). */
 #include <string.h>
 
@@ -40,6 +38,7 @@ main (int argc, char **argv) {
     INTMASK *mask;
     int stat;
     const char *ifile, *ofile;
+    int extractTop = 100, extractBtm = 200;
 
     check(argc == 3, "Syntax: %s <input> <output>", argv[0]);
     ifile = argv[1];
@@ -51,6 +50,9 @@ main (int argc, char **argv) {
 
     in = im_open( ifile, "r" );
     if (!in) vips_error_exit( "unable to read %s", ifile );
+    check(in->Ysize > 5 && in->Xsize > 5,
+          "Input image must be larger than 5 in both dimensions",
+          extractBtm);
 
     stat = im_open_local_array(in, tmps, NTMPS, "tt", "p");
     check(!stat, "Unable to create temps.");
@@ -59,22 +61,28 @@ main (int argc, char **argv) {
 
     timer_done();
 
+    /* Reduce the extraction size if it's bigger than the image. */
+    if (extractBtm + extractTop >= in->Ysize ||
+        extractBtm + extractTop >= in->Xsize) {
+        extractTop = 2;
+        extractBtm = 2;
+    }/* if */
 
-    timer_start(ifile, "im_extract_area()");
+    timer_start(ifile, "im_extract_area");
     check(
-        !im_extract_area(in, tmps[0], 100, 100, in->Xsize - 200,
-                         in->Ysize - 200),
+        !im_extract_area(in, tmps[0], extractTop, extractTop, in->Xsize - extractBtm,
+                         in->Ysize - extractBtm),
         "extract failed.");
     timer_done();
 
-    timer_start(ifile, "im_affine()");
+    timer_start(ifile, "im_affine");
     check(
         !im_affine(tmps[0], tmps[1], 0.9, 0, 0, 0.9, 0, 0,
                    0, 0, in->Xsize * 0.9, in->Ysize * 0.9),
         "im_affine failed.");
     timer_done();
 
-    timer_start(ifile, "im_conv()");
+    timer_start(ifile, "im_conv");
     check(
         !im_conv (tmps[1], tmps[2], mask),
         "im_conv failed.");

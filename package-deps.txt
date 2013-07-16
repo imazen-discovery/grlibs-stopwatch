@@ -22,5 +22,9 @@ libexif-dev
 #libv4l-dev   # Broken, skipping
 python-dev
 
+# These are needed by the test script(s)
 libgd-gd2-perl
 imagemagick
+
+# Only necessary if C code breaks.
+gdb
