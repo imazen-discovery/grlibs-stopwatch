@@ -9,7 +9,7 @@ include Math
 
 # Settings:
 COUNT = 10               # Number of times to run each benchmark
-SLEEP = 0#10               # Max number of seconds to sleep between runs
+SLEEP = 0                # Max number of seconds to sleep between runs
 
 # Directories
 ROOT = Dir.pwd
@@ -22,6 +22,7 @@ CDIR = ROOT + '/c_tests'
 CMDS=[
       ["c_tests/shrink %s 90 60 40 20", %w{90 60 40 20}],
       ["ruby_tests/shrink.rb %s 90 60 40 20", %w{90 60 40 20}],
+      ["perl_tests/libgd_shrink.pl %s 90 60 40 20", %w{90 60 40 20}],
       ["c_tests/stats %s", %w{min max avg deviate Total:}],
       ["c_tests/benchmark %s junk_out.tiff", %w{Total:}],
      ]
@@ -36,7 +37,7 @@ def mkimg(name, pix, noisy)
   system("#{ROOT}/stats_tools/mkimg.pl #{xy} #{xy} #{name}.png #{colours}") or
     raise "Error running 'mkimg.pl': #{$?}"
 
-  for ext in %w{jpg tiff png}   # gif doesn't work; segfaults
+  for ext in %w{jpg png}   #  %w{jpg tiff png gif}
     fullname = "#{name}.#{ext}"
     allnames.push fullname
     
@@ -71,6 +72,13 @@ def benchmarksByCmd(images, outfh)
     for img in images
       thisCmd = "#{ROOT}/" + sprintf(cmd, img)
       img, ext = img.split(/\./, 2)
+
+      # The perl GD benchmark can't handle TIFF.  (The lib can but the
+      # Perl module can't.)
+      next if ext == 'tiff' && thisCmd =~ /\.pl/;
+
+      # VIPS can't handle GIF
+      next if ext == 'gif' && thisCmd !~ /\.pl/;
 
       puts "\t#{thisCmd}"
       Runner.new( thisCmd,

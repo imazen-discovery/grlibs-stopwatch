@@ -31,6 +31,9 @@ cfg_scripts/checkout-liborc.sh
 echo "Checking out libvips:"
 cfg_scripts/checkout-libvips.sh
 
+echo "Checking out libgd."
+cfg_scripts/checkout.sh git@github.com:suetanvil gd-libgd 2.1.0-stable
+
 echo "Bringing up vagrant:"
 if vagrant status | grep -q '^default *running'; then
     echo "vagrant box is already up."
