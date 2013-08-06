@@ -2,7 +2,7 @@
 
 # Setup everything and start everything
 
-DEFAULT_BUILD_DIR=../vips-build
+DEFAULT_BUILD_DIR=../grlibs-sw-build
 DELAY=5
 
 set -e          # Exit on failure
@@ -26,13 +26,17 @@ else
 fi
 
 echo "Checking out liborc:"
-cfg_scripts/checkout-liborc.sh
+cfg_scripts/checkout.sh orc-4-hax tweaks-0.4.17
+#cfg_scripts/checkout-liborc.sh
 
 echo "Checking out libvips:"
-cfg_scripts/checkout-libvips.sh
+cfg_scripts/checkout.sh libvips 7.34
 
 echo "Checking out libgd."
-cfg_scripts/checkout.sh git@github.com:suetanvil gd-libgd 2.1.0-stable
+cfg_scripts/checkout.sh gd-libgd 2.1.0-stable
+
+echo "Checking out GD-Perl."
+cfg_scripts/checkout.sh GD-Perl
 
 echo "Checking out Perl GD bindings."
 cfg_scripts/checkout.sh git@github.com:suetanvil GD-Perl

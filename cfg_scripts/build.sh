@@ -33,10 +33,11 @@ sudo make install
 sudo ldconfig
 cd ..
 
-echo "Building LibGD Perl module"
+echo "Building Perl GD module."
 cd GD-Perl
 perl Makefile.PL
 make
+# Skip 'make test' because some of them fail.
 sudo make install
 sudo ldconfig
 cd ..
