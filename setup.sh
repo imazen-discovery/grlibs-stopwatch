@@ -34,6 +34,9 @@ cfg_scripts/checkout-libvips.sh
 echo "Checking out libgd."
 cfg_scripts/checkout.sh git@github.com:suetanvil gd-libgd 2.1.0-stable
 
+echo "Checking out Perl GD bindings."
+cfg_scripts/checkout.sh git@github.com:suetanvil GD-Perl
+
 echo "Bringing up vagrant:"
 if vagrant status | grep -q '^default *running'; then
     echo "vagrant box is already up."
@@ -41,8 +44,13 @@ else
     vagrant up
 fi
 
-if vagrant ssh -c 'pkg-config vips && pkg-config orc-0.4'; then
-    echo "Using installed libraries."
+if vagrant ssh -c 'pkg-config vips'; then
+    cat - <<EOF
+Found vips installation; assuming all packages are installed.
+(If this is not the case, tests will probably fail; try running
+build.sh by hand.)
+EOF
+
 else
     echo "Building libraries:"
     vagrant ssh -c 'cd /vagrant; cfg_scripts/build.sh'

@@ -1,10 +1,10 @@
 # vips-stopwatch #
 
-This is a small collection of programs which use the Vips library to
-do some simple image manipulation, times how long various stages take
-and outputs the results.
+This is a small collection of programs which use the Vips and GD
+libraries to do some simple image manipulation, times how long various
+stages take and outputs the results.
 
-The goal is to get a basic idea of just how fast Vips is.
+The goal is to get a basic idea of just how fast the libs are.
 
 For consistency, we use Vagrant to create a development VM and build
 everything there.  The script 'setup.sh' does everything.

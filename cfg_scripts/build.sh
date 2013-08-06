@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Compile orc and vips.  This needs to be run inside the box.
+# Compile libraries.
 
 set -e
 
@@ -12,6 +12,7 @@ cd orc-4-hax
 ./configure --prefix=/usr/local/
 make
 sudo make install
+sudo ldconfig
 cd ..
 
 echo "Building vips:"
@@ -20,6 +21,7 @@ cd libvips
 ./configure --prefix=/usr/local/ 
 make
 sudo make install
+sudo ldconfig
 cd ..
 
 echo "Building LibGD"
@@ -28,19 +30,20 @@ cd gd-libgd/
 ./configure --prefix=/usr/local/ --with-tiff=/usr/lib/ --with-xpm=/usr/lib/
 make
 sudo make install
+sudo ldconfig
 cd ..
 
-echo "Running ldconfig:"
+echo "Building LibGD Perl module"
+cd GD-Perl
+perl Makefile.PL
+make
+sudo make install
 sudo ldconfig
+cd ..
 
 echo "Installing vips gem:"
 sudo gem install ruby-vips -v 0.3.6
 
-
-echo "Installing GD perl module:"
-sudo cpanm --notest -i GD
-# Note:    ^^^^^^^^ I disable tests here because GD's tests fail.  It looks
-# like this is due to fragile tests, though.
 
 
 

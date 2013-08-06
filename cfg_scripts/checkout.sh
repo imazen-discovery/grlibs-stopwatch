@@ -24,5 +24,7 @@ git clone $ACCOUNT/$REPO
 cd $REPO
 [ -n "$BRANCH" ] && git checkout "$BRANCH"
 
+# Ensure this exits with a correct status
+exit 0
 
 
