@@ -37,7 +37,7 @@ import it easily.  In addition, the tools `tabsort.rb` and
 
 5) Run the test:
 
-    vagrant ssh -c 'cd /vagrant/; ./stats_tools/all_benchmarks.rb '
+    vagrant ssh -c 'cd /vagrant/; ./stats_tools/all_benchmarks.rb'
 
 6) Examine the results in `timings.tab`.
 
