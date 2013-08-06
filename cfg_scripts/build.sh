@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Compile orc and vips.  This needs to be run inside the box.
+# Compile libraries.
 
 set -e
 

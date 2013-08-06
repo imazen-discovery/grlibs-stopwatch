@@ -2,6 +2,8 @@
 
 # Run all of the benchmarks.
 
+require 'set'
+
 $LOAD_PATH.unshift(File.dirname(__FILE__)) # Local modules
 require 'runner'
 
@@ -18,13 +20,16 @@ OUTPUT = ROOT + '/timings.tab'
 CDIR = ROOT + '/c_tests'
 
 
-# Commands to run
+# Commands to run:
+# Format: [command, fields we care about, [tags] ]
 CMDS=[
-      ["c_tests/shrink %s 90 60 40 20", %w{90 60 40 20}],
-      ["ruby_tests/shrink.rb %s 90 60 40 20", %w{90 60 40 20}],
-      ["perl_tests/libgd_shrink.pl %s 90 60 40 20", %w{90 60 40 20}],
-      ["c_tests/stats %s", %w{min max avg deviate Total:}],
-      ["c_tests/benchmark %s junk_out.tiff", %w{Total:}],
+      ["c_tests/vips_shrink %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :vips]],
+      ["ruby_tests/vips_shrink.rb %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :vips]],
+      ["python_tests/vips_shrink.py %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :vips]],
+      ["perl_tests/libgd_shrink.pl %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :gd]],
+      ["perl_tests/libgd_flip90.pl %s", %w{90 180 270 180-inplace}, [:flip, :gd]],
+      ["c_tests/stats %s", %w{min max avg deviate Total:}, [:stats, :vips]],
+      ["c_tests/benchmark %s junk_out.tiff", %w{Total:}, [:misc, :vips]],
      ]
 
 
@@ -61,12 +66,16 @@ def mkAllImages
   return names
 end
 
-def benchmarksByCmd(images, outfh)
+def benchmarksByCmd(images, outfh, tags)
+  tagSet = tags.to_set
+
   puts "Running benchmarks:"
   addHeading = true
 
-  for cmdAndFields in CMDS
-    cmd, fields = cmdAndFields
+  for cmdInfo in CMDS
+    cmd, fields, cmdTags = cmdInfo
+
+    next unless tagSet.size == 0 || (tagSet & cmdTags).size > 0
 
 #    outfh.write(sprintf(cmd, '<filename>') + "\n")
     for img in images
@@ -114,6 +123,11 @@ end
 
 
 
+# See if any tags were specified on the arg list
+tags = []
+if ARGV.size > 0
+  tags = ARGV.map {|s| s.to_sym}
+end
 
 
 # Create the tmp directory
@@ -133,9 +147,9 @@ Dir.chdir(TMP) do |path|
   images = mkAllImages()
 
   File.open(OUTPUT, "w") do |outfh|
-    outfh.write("Vips Benchmarks\n\n")
+    outfh.write("Library Benchmarks\n\n")
 
-    benchmarksByCmd(images, outfh)
+    benchmarksByCmd(images, outfh, tags)
   end
 end
 

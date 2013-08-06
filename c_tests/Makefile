@@ -9,9 +9,9 @@ LD=gcc
 LDFLAGS=-g
 LIBS=`pkg-config $(VIPS) --libs`
 
-all: shrink stats benchmark
+all: vips_shrink stats benchmark
 
-shrink: shrink.o timer.o util.o
+vips_shrink: vips_shrink.o timer.o util.o
 	$(LD) $(LDFLAGS) -o $@ $^ $(LIBS)  
 
 stats: stats.o timer.o util.o
@@ -24,4 +24,4 @@ timer.o: timer.c
 util.o: util.c
 
 clean:
-	-rm *.o shrink stats benchmark
+	-rm *.o vips_shrink stats benchmark
