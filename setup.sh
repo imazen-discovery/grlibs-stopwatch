@@ -21,8 +21,15 @@ if [ ! -f BUILD_DIR ]; then
     sleep $DELAY
     cfg_scripts/mk_builddir.sh $DEFAULT_BUILD_DIR
 else
-    echo -n "Using BUILD_DIR: "
-    cat BUILD_DIR
+    BD=`cat BUILD_DIR`
+    echo -n "Using BUILD_DIR: $BD"
+
+    # Build dir. could have been removed while the file BUILD_DIR
+    # stayed behind.
+    if [ ! -d "$BD" ]; then
+        echo "Creating '$BD':"
+        cfg_scripts/mk_builddir.sh "$BD"
+    fi
 fi
 
 echo "Checking out liborc:"
