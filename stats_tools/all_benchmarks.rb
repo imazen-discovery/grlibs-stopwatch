@@ -27,6 +27,7 @@ CMDS=[
       ["ruby_tests/vips_shrink.rb %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :vips]],
       ["python_tests/vips_shrink.py %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :vips]],
       ["perl_tests/libgd_shrink.pl %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :gd]],
+      ["perl_tests/libgd_shrink_resample.pl %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :gd]],
       ["perl_tests/libgd_flip90.pl %s", %w{90 180 270 180-inplace}, [:flip, :gd]],
       ["c_tests/stats %s", %w{min max avg deviate Total:}, [:stats, :vips]],
       ["c_tests/benchmark %s junk_out.tiff", %w{Total:}, [:misc, :vips]],
