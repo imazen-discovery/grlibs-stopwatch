@@ -26,8 +26,8 @@ my $Img = GD::Image->new($width, $height);
   my @colours;
   my $count = 0;
 
-  # Allocate all available colours
-  for (0 .. 1000000) {
+  # Allocate 8 bits worth of colors
+  for (0 .. 255) {
     my @rgb = map { int(rand(256)) } (0, 0, 0);
 
     my $nc = $Img->colorAllocate(@rgb);

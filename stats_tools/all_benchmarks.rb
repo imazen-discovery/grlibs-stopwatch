@@ -13,12 +13,15 @@ include Math
 COUNT = 10               # Number of times to run each benchmark
 SLEEP = 0                # Max number of seconds to sleep between runs
 
+# Global flags
+$keep = false            # If true, keep intermediate files.
+
 # Directories
 ROOT = Dir.pwd
 TMP = ROOT + '/tmp-all-benchmarks'
 OUTPUT = ROOT + '/timings.tab'
 CDIR = ROOT + '/c_tests'
-
+DATADIR = ROOT + '/data'
 
 # Commands to run:
 # Format: [command, fields we care about, [tags] ]
@@ -28,27 +31,35 @@ CMDS=[
       ["python_tests/vips_shrink.py %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :vips]],
       ["perl_tests/libgd_shrink.pl %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :gd]],
       ["perl_tests/libgd_shrink_resample.pl %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :gd]],
+      ["perl_tests/libgd_shrink_truecolour.pl %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :gd]],
       ["perl_tests/libgd_flip90.pl %s", %w{90 180 270 180-inplace}, [:flip, :gd]],
       ["c_tests/stats %s", %w{min max avg deviate Total:}, [:stats, :vips]],
       ["c_tests/benchmark %s junk_out.tiff", %w{Total:}, [:misc, :vips]],
      ]
 
 
-def mkimg(name, pix, noisy)
+# Parse the options
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{__FILE__} [--keep] <tag> ..."
+  opts.on('--keep', "Do not delete temp. files.") {$keep = true}
+end.parse!
+
+
+
+def mkimg(name, pix)
   xy = sqrt(pix).round + 1
-  colours = noisy ? "" : "1"
   allnames = []
 
   puts "Creating '#{name}'"
-  system("#{ROOT}/stats_tools/mkimg.pl #{xy} #{xy} #{name}.png #{colours}") or
-    raise "Error running 'mkimg.pl': #{$?}"
+  system("convert #{DATADIR}/pic1.jpg -resize #{xy}x#{xy}! #{name}.jpg") or
+       raise "Error running 'convert': #{$?}"
 
-  for ext in %w{jpg png}   #  %w{jpg tiff png gif}
+  for ext in %w{jpg tiff png gif}
     fullname = "#{name}.#{ext}"
     allnames.push fullname
     
-    next if ext == 'png'
-    system("convert #{name}.png #{fullname}") or
+    next if ext == 'jpg'
+    system("convert #{name}.jpg #{fullname}") or
       raise "Error running 'convert': #{$?}"
   end
 
@@ -60,8 +71,7 @@ def mkAllImages
   names = []
 
   for sz in sizes
-    names += mkimg("#{sz}", sz, 1)
-    names += mkimg("#{sz}simple", sz, 0)
+    names += mkimg("#{sz}", sz)
   end
 
   return names
@@ -78,7 +88,6 @@ def benchmarksByCmd(images, outfh, tags)
 
     next unless tagSet.size == 0 || (tagSet & cmdTags).size > 0
 
-#    outfh.write(sprintf(cmd, '<filename>') + "\n")
     for img in images
       thisCmd = "#{ROOT}/" + sprintf(cmd, img)
       img, ext = img.split(/\./, 2)
@@ -154,6 +163,6 @@ Dir.chdir(TMP) do |path|
   end
 end
 
-cleantmp()
+cleantmp() unless $keep
 
 puts "Done.  Output in '#{OUTPUT}'"
