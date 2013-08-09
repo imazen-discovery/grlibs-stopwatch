@@ -2,6 +2,7 @@
 
 # Run all of the benchmarks.
 
+require 'optparse'
 require 'set'
 
 $LOAD_PATH.unshift(File.dirname(__FILE__)) # Local modules
