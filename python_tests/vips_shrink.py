@@ -18,7 +18,7 @@ def main(imgfile, percentages):
             print "Illegal percentage: ", pc
             exit(1)
 
-        outfile = "%d-%s" % (pc, imgfile)
+        outfile = "%d-vips-py-%s" % (pc, imgfile)
         sz = round(100.0/pc)
         with TimerContext(imgfile, str(pc)):
             im.shrink(sz, sz).write(outfile)

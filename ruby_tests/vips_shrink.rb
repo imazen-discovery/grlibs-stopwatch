@@ -25,7 +25,7 @@ def main(imgfile, percentages)
     raise "Invalid percentage: #{p}" unless percent > 0 && percent <= 100
     sz = (100.0/percent).round
     time "#{imgfile}\t#{percent.to_i}" do
-      im.shrink(sz).write("#{percent.round}-#{base}")
+      im.shrink(sz).write("#{percent.round}-vips-rb-#{base}")
     end
   end
 

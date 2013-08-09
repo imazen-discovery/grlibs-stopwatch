@@ -49,7 +49,7 @@ use ActionTimer;
       $dest->copyResampled($src, 0, 0, 0, 0, $destWidth, $destHeight,
                          $srcWidth, $srcHeight);
 
-      my $oname = "$percent-$name.$ext";
+      my $oname = "$percent-gd-resample-$name.$ext";
       open my $fh, ">", $oname
         or die "Unable to open '$oname' for writing.\n";
       print $fh $dest->$type
