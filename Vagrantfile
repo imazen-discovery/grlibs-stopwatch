@@ -5,6 +5,9 @@ EXTRA_FOLDER=
   File.exists?("BUILD_DIR") ? IO.readlines("BUILD_DIR")[0].chomp : "";
 EXTRA_MNT = "/vagrant-extra"
 
+CORES=
+  File.exists?("NUM_CORES") ? IO.readlines("NUM_CORES")[0].chomp : "1";
+
 INSTALL_SCRIPT=<<EOF
 apt-get update
 apt-get install -y `egrep -v '^#'  /vagrant/package-deps.txt `
@@ -51,6 +54,11 @@ Vagrant.configure("2") do |config|
     config.vm.synced_folder EXTRA_FOLDER, EXTRA_MNT
   else
 #    puts "No directory given for #{EXTRA_MNT}"
+  end
+
+  config.vm.provider :virtualbox do |vb|
+    vb.customize ["modifyvm", :id, "--cpus", CORES]
+    vb.customize ["modifyvm", :id, "--ioapic", "on"]   # Needed for some AMD processors
   end
 
   # Provider-specific configuration so you can fine-tune various

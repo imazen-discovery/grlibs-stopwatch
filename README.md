@@ -29,16 +29,22 @@ import it easily.  In addition, the tools `tabsort.rb` and
 
     ./cfg_scripts/mk_builddir.sh ../stuff/
 
-3) Set up the environment:
+3) (Optional) Set the number of cores by writing a digit to NUM_CORES:
+
+   echo 4 > NUM_CORES
+
+(This only works with VirtualBox so far.)
+
+4) Set up the environment:
 
     ./setup.sh
 
-4) Wait.
+5) Wait.
 
-5) Run the test:
+6) Run the test:
 
     vagrant ssh -c 'cd /vagrant/; ./stats_tools/all_benchmarks.rb'
 
-6) Examine the results in `timings.tab`.
+7) Examine the results in `timings.tab`.
 
 
