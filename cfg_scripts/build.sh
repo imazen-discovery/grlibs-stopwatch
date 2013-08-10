@@ -43,6 +43,7 @@ cd ..
 # cd ..
 
 echo "Installing vips gem:"
+sudo gem install ffi -v 1.9.0
 sudo gem install ruby-vips -v 0.3.6
 
 
