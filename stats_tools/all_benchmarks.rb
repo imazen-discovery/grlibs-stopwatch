@@ -28,11 +28,14 @@ DATADIR = ROOT + '/data'
 # Format: [command, fields we care about, [tags] ]
 CMDS=[
       ["c_tests/vips_shrink %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :vips]],
-      ["ruby_tests/vips_shrink.rb %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :vips]],
+      ["ruby_tests/vips_shrink.rb %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :vips, :ruby]],
       ["python_tests/vips_shrink.py %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :vips]],
-      ["perl_tests/libgd_shrink.pl %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :gd]],
-      ["perl_tests/libgd_shrink_resample.pl %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :gd]],
-      ["perl_tests/libgd_shrink_truecolour.pl %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :gd]],
+      # ["perl_tests/libgd_shrink.pl %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :gd]],
+      # ["perl_tests/libgd_shrink_resample.pl %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :gd]],
+      # ["perl_tests/libgd_shrink_truecolour.pl %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :gd]],
+      ["ruby_tests/gd_shrink.rb %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :gd, :ruby]],
+      ["ruby_tests/gd_shrink.rb --resample %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :gd, :ruby]],
+      ["ruby_tests/gd_shrink.rb --truecolor %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :gd, :ruby]],
       ["perl_tests/libgd_flip90.pl %s", %w{90 180 270 180-inplace}, [:flip, :gd]],
       ["c_tests/stats %s", %w{min max avg deviate Total:}, [:stats, :vips]],
       ["c_tests/benchmark %s junk_out.tiff", %w{Total:}, [:misc, :vips]],
@@ -87,15 +90,15 @@ def benchmarksByCmd(images, outfh, tags)
   for cmdInfo in CMDS
     cmd, fields, cmdTags = cmdInfo
 
-    next unless tagSet.size == 0 || (tagSet & cmdTags).size > 0
+    next unless tagSet.size == 0 || tagSet & cmdTags == tagSet
 
     for img in images
       thisCmd = "#{ROOT}/" + sprintf(cmd, img)
       img, ext = img.split(/\./, 2)
 
-      # The perl GD benchmark can't handle TIFF.  (The lib can but the
-      # Perl module can't.)
-      next if ext == 'tiff' && thisCmd =~ /\.pl/;
+      # The perl^Wruby GD benchmark can't handle TIFF.  (The lib can
+      # but the Perl^WRuby module can't.)
+      next if ext == 'tiff' && thisCmd =~ /gd_/;
 
       # VIPS can't handle GIF
       next if ext == 'gif' && thisCmd !~ /\.pl/;

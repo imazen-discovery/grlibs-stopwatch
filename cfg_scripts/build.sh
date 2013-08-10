@@ -33,14 +33,14 @@ sudo make install
 sudo ldconfig
 cd ..
 
-echo "Building Perl GD module."
-cd GD-Perl
-perl Makefile.PL
-make
-# Skip 'make test' because some of them fail.
-sudo make install
-sudo ldconfig
-cd ..
+# echo "Building Perl GD module."
+# cd GD-Perl
+# perl Makefile.PL
+# make
+# # Skip 'make test' because some of them fail.
+# sudo make install
+# sudo ldconfig
+# cd ..
 
 echo "Installing vips gem:"
 sudo gem install ruby-vips -v 0.3.6

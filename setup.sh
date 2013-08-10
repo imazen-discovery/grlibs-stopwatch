@@ -42,8 +42,11 @@ cfg_scripts/checkout.sh libvips 7.34
 echo "Checking out libgd."
 cfg_scripts/checkout.sh gd-libgd 2.1.0-stable
 
-echo "Checking out GD-Perl."
-cfg_scripts/checkout.sh GD-Perl
+#echo "Checking out GD-Perl."
+#cfg_scripts/checkout.sh GD-Perl
+
+echo "Checking out gd2-ffij."
+cfg_scripts/checkout.sh gd2-ffij
 
 echo "Bringing up vagrant:"
 if vagrant status | grep -q '^default *running'; then

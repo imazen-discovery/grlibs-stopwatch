@@ -13,6 +13,16 @@ apt-get update
 apt-get install -y `egrep -v '^#'  /vagrant/package-deps.txt `
 EOF
 
+RB_PATH_SCRIPT=<<EOF
+if [ -f /home/vagrant/.profile ] && grep -q setrubypath.sh /home/vagrant/.profile
+then
+  true
+else
+  echo '. /vagrant/cfg_scripts/setrubypath.sh' >> /home/vagrant/.profile
+fi
+EOF
+
+
 Vagrant.configure("2") do |config|
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "precise32"
@@ -23,6 +33,9 @@ Vagrant.configure("2") do |config|
 
   # Install packages
   config.vm.provision :shell, :inline => INSTALL_SCRIPT
+
+  # Set the ruby path
+  config.vm.provision :shell, :inline => RB_PATH_SCRIPT
 
   # The third-party build dir has to be provided via the launch script.
   if EXTRA_FOLDER.size > 0
