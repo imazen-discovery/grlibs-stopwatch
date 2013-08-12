@@ -31,4 +31,4 @@ gdb
 # LibGD stuff
 libtiff4-dev
 libxpm-dev
-cpanminus
+#cpanminus
