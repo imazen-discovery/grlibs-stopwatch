@@ -30,13 +30,9 @@ CMDS=[
       ["c_tests/vips_shrink %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :vips]],
       ["ruby_tests/vips_shrink.rb %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :vips, :ruby]],
       ["python_tests/vips_shrink.py %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :vips]],
-      # ["perl_tests/libgd_shrink.pl %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :gd]],
-      # ["perl_tests/libgd_shrink_resample.pl %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :gd]],
-      # ["perl_tests/libgd_shrink_truecolour.pl %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :gd]],
       ["ruby_tests/gd_shrink.rb %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :gd, :ruby]],
       ["ruby_tests/gd_shrink.rb --resample %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :gd, :ruby]],
       ["ruby_tests/gd_shrink.rb --truecolor %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :gd, :ruby]],
-      ["perl_tests/libgd_flip90.pl %s", %w{90 180 270 180-inplace}, [:flip, :gd]],
       ["c_tests/stats %s", %w{min max avg deviate Total:}, [:stats, :vips]],
       ["c_tests/benchmark %s junk_out.tiff", %w{Total:}, [:misc, :vips]],
      ]
