@@ -15,7 +15,8 @@ COUNT = 10               # Number of times to run each benchmark
 SLEEP = 0                # Max number of seconds to sleep between runs
 
 # Global flags
-$keep = false            # If true, keep intermediate files.
+$keep = false            # True -> keep intermediate files.
+$minimal = false         # True -> only test on one small image; for testing
 
 # Directories
 ROOT = Dir.pwd
@@ -41,7 +42,8 @@ CMDS=[
 # Parse the options
 OptionParser.new do |opts|
   opts.banner = "Usage: #{__FILE__} [--keep] <tag> ..."
-  opts.on('--keep', "Do not delete temp. files.") {$keep = true}
+  opts.on('--keep',    "Do not delete temp. files.") {$keep = true}
+  opts.on('--minimal', "Only test for one small image.") {$minimal = true}
 end.parse!
 
 
@@ -68,8 +70,9 @@ end
 
 def mkAllImages
   sizes = [100, 1000, 10000, 100000, 1000000, 3000000]
-  names = []
+  sizes = [100] if $minimal
 
+  names = []
   for sz in sizes
     names += mkimg("#{sz}", sz)
   end
@@ -101,7 +104,7 @@ def benchmarksByCmd(images, outfh, tags)
 
       puts "\t#{thisCmd}"
       Runner.new( thisCmd,
-                  COUNT,
+                  $minimal ? 2 : COUNT,
                   SLEEP,
                   outfh, 
                   ['', sprintf(cmd, '<fn>'), img, ext],
