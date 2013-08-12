@@ -83,7 +83,7 @@ class Runner
 
     results.push(@leaders.clone.map!{|a| ''} + ['Category', 'Mean Time(ms)',
                                                 'Median Time', 'Min Time',
-                                                'Max Time']
+                                                'Max Time', 'Range']
                  ) if @addHeading
     @addHeading = false
 
@@ -91,7 +91,7 @@ class Runner
       fv = fieldVals[f]
 
       row = @leaders.clone
-      row += [f, fv.mean, fv.median, fv.min, fv.max]
+      row += [f, fv.mean, fv.median, fv.min, fv.max, fv.max - fv.min]
 
       results.push row
     end
