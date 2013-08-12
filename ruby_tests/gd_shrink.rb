@@ -22,9 +22,9 @@ def shrink(imgfile, percentages, truecolor, resample)
   im = nil      # declare in the local scope
   tc = "-" + (resample ? "rs-" : "")
 
-  time("# Load #{imgfile}") {im = Image.import(imgfile)}
+  time(imgfile, "Load") {im = Image.import(imgfile)}
 
-  time "# Converting to #{truecolor ? 'true color' : 'indexed'}." do
+  time imgfile, "Converting to #{truecolor ? 'true color' : 'indexed'}." do
     if truecolor
       im = im.to_true_color()
       tc += "tc-"
@@ -44,7 +44,7 @@ def shrink(imgfile, percentages, truecolor, resample)
     destWidth, destHeight = [im.width, im.height].map{|d| (d*ratio).round}
 
     result = nil
-    time "#{imgfile}\t#{percent}" do
+    time imgfile, percent.to_s do
       result = im.resize(destWidth, destHeight, resample)
       result.export("#{percent}-gd-rb#{tc}#{base}")
     end

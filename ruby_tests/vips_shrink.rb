@@ -16,7 +16,7 @@ include Timer
 
 def main(imgfile, percentages)
   im = nil      # declare in the local scope
-  time("Load #{imgfile}") {im = Image.new(imgfile)}
+  time(imgfile, "Loading") {im = Image.new(imgfile)}
 
   base = File.basename(imgfile)
 
@@ -24,7 +24,7 @@ def main(imgfile, percentages)
     percent = p.to_f
     raise "Invalid percentage: #{p}" unless percent > 0 && percent <= 100
     sz = (100.0/percent).round
-    time "#{imgfile}\t#{percent.to_i}" do
+    time imgfile, percent.to_i.to_s do
       im.shrink(sz).write("#{percent.round}-vips-rb-#{base}")
     end
   end
