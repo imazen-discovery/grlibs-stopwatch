@@ -56,14 +56,14 @@ end
 
 truecolor = false
 OptionParser.new do |opts|
-  opts.banner = "Usage: #{__FILE__} <filename> <percentage> ..."
+  opts.banner = "Usage: #{__FILE__} <filename>"
   opts.on('--truecolor', "Force images to true color instead of indexed.") {
     truecolor = true
   }
 end.parse!
 
 if ARGV.size < 1
-  puts "USAGE: gd_flip90 <filename>"
+  puts "Missing arguments.  Try '--help'."
   exit 1
 end
 
