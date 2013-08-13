@@ -34,6 +34,8 @@ CMDS=[
       ["ruby_tests/gd_shrink.rb %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :gd, :ruby]],
       ["ruby_tests/gd_shrink.rb --resample %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :gd, :ruby]],
       ["ruby_tests/gd_shrink.rb --truecolor %s 90 60 40 20", %w{90 60 40 20}, [:shrink, :gd, :ruby]],
+      ["ruby_tests/gd_flip90.rb --truecolor %s", %w{45 90 180 270}, [:flip, :gd, :ruby]],
+      ["ruby_tests/gd_flip90.rb %s", %w{45 90 180 270}, [:flip, :gd, :ruby]],
       ["c_tests/stats %s", %w{min max avg deviate Total:}, [:stats, :vips]],
       ["c_tests/benchmark %s junk_out.tiff", %w{Total:}, [:misc, :vips]],
      ]
