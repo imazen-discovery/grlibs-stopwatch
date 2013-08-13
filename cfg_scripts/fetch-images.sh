@@ -10,7 +10,7 @@ cd data/
 
 for file in \
     11s.jpg 11.jpg 12s.jpg 12.jpg 8.jpg 8.jpg 8s.jpg 15.jpg 15s.jpg \
-    22s.jpg 22.jpg 15tiny.jpg 13.jpg 13s.jpg
+    22s.jpg 22.jpg 13.jpg 13s.jpg
 do
     if [ -f $file ]; then
         echo "Already have '$file'.  Skipping."
