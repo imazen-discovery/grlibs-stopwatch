@@ -29,8 +29,13 @@ else
     if [ ! -d "$BD" ]; then
         echo "Creating '$BD':"
         cfg_scripts/mk_builddir.sh "$BD"
+    else
+        echo
     fi
 fi
+
+echo "Fetching test images:"
+cfg_scripts/fetch-images.sh
 
 echo "Checking out liborc:"
 cfg_scripts/checkout.sh orc-4-hax tweaks-0.4.17
