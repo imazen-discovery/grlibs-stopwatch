@@ -13,6 +13,14 @@ if [ ! -f Vagrantfile ]; then
     exit 1
 fi
 
+# Sanity check #2: are we running on the Vagrant instance?  (Comment
+# this out if you actually do want to run setup under Vagrant.)
+if [ -d /vagrant ] && [ -d /vagrant-extra/ ]; then
+    echo "Attempting to run setup.sh under Vagrant."
+    exit 1
+fi
+
+
 # Setup the build dir. if needed.
 if [ ! -f BUILD_DIR ]; then
     echo "About to setup build directory in $DEFAULT_BUILD_DIR"
