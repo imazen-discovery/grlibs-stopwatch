@@ -13,7 +13,7 @@ else
     exit 1
 fi
 
-mkdir data
+[ -d data ] || mkdir data
 cd data/
 
 for file in \
