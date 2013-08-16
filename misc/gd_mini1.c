@@ -9,6 +9,8 @@ exit $?
 
 #*/
 
+/* ObAttribution: the GD manual. */
+
 /* Bring in gd library functions */
 #include "gd.h"
 
