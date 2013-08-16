@@ -14,14 +14,19 @@ fi
 
 cd `cat BUILD_DIR`
 
-if [ -d $REPO ]; then
-    echo "$REPO present.  Skipping checkout."
-    exit 0
+if [ ! -d $REPO ]; then
+    git clone $ACCOUNT/$REPO.git
 fi
 
-git clone $ACCOUNT/$REPO.git
 cd $REPO
-[ -n "$BRANCH" ] && git checkout "$BRANCH"
+
+# Checkout the branch if necessary.
+if [ -n "$BRANCH" ]; then
+    git checkout "$BRANCH"
+fi
+
+# And do a pull
+git pull
 
 # Ensure this exits with a correct status
 exit 0

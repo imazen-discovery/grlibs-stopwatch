@@ -37,21 +37,8 @@ fi
 echo "Fetching test images:"
 cfg_scripts/fetch-images.sh
 
-echo "Checking out liborc:"
-cfg_scripts/checkout.sh orc-4-hax tweaks-0.4.17
-#cfg_scripts/checkout-liborc.sh
-
-echo "Checking out libvips:"
-cfg_scripts/checkout.sh libvips 7.34
-
-echo "Checking out libgd."
-cfg_scripts/checkout.sh gd-libgd 2.1.0-stable
-
-#echo "Checking out GD-Perl."
-#cfg_scripts/checkout.sh GD-Perl
-
-echo "Checking out gd2-ffij."
-cfg_scripts/checkout.sh gd2-ffij
+echo "Checking out repos:"
+cfg_scripts/checkout_all.sh
 
 echo "Bringing up vagrant:"
 if vagrant status | grep -q '^default *running'; then
