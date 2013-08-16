@@ -6,6 +6,14 @@ set -e
 
 URL=http://s3.amazonaws.com/resizer-images
 
+if [ -d cfg_scripts/ ] ; then
+    true
+else
+    echo "This script must be run from the project root directory."
+    exit 1
+fi
+
+mkdir data
 cd data/
 
 for file in \
