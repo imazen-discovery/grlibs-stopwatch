@@ -8,7 +8,8 @@ cd /vagrant-extra/
 
 echo "Building orc:"
 cd orc-4-hax
-./autogen.sh
+git pull
+[ -f configure ] || ./autogen.sh
 ./configure --prefix=/usr/local/
 make
 sudo make install
@@ -17,7 +18,8 @@ cd ..
 
 echo "Building vips:"
 cd libvips
-./bootstrap.sh 
+git pull
+[ -f configure ] || ./bootstrap.sh 
 ./configure --prefix=/usr/local/ 
 make
 sudo make install
@@ -26,7 +28,8 @@ cd ..
 
 echo "Building LibGD"
 cd gd-libgd/
-./bootstrap.sh
+git pull
+[ -f configure ] || ./bootstrap.sh
 ./configure --prefix=/usr/local/ --with-tiff=/usr/lib/ --with-xpm=/usr/lib/
 make
 sudo make install
@@ -41,6 +44,11 @@ cd ..
 # sudo make install
 # sudo ldconfig
 # cd ..
+
+echo "Fetching latest gd2-ffij:"
+cd gd2-ffij
+git pull
+cd ..
 
 echo "Installing vips gem:"
 sudo gem install ffi -v 1.9.0

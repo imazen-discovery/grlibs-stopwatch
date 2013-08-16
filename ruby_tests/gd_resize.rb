@@ -69,23 +69,28 @@ def shrink(imgfile, widths, truecolor, resample)
   print_timings()
 end
 
+def main
+  truecolor = false
+  resample = false
+  OptionParser.new do |opts|
+    opts.banner = "Usage: #{__FILE__} <filename> <width> ..."
+    opts.on('--truecolor', "Force images to true color instead of indexed.") {
+      truecolor = true
+    }
+    opts.on('--resample', "Resample when resizing; implies --truecolor.") {
+      truecolor = true
+      resample = true
+    }
+  end.parse!
 
-truecolor = false
-resample = false
-OptionParser.new do |opts|
-  opts.banner = "Usage: #{__FILE__} <filename> <width> ..."
-  opts.on('--truecolor', "Force images to true color instead of indexed.") {
-    truecolor = true
-  }
-  opts.on('--resample', "Resample when resizing; implies --truecolor.") {
-    truecolor = true
-    resample = true
-  }
-end.parse!
+  if ARGV.size < 2
+    puts "USAGE: resize <filename> <width> ..."
+    exit 1
+  end
 
-if ARGV.size < 2
-  puts "USAGE: shrink <filename> <width> ..."
-  exit 1
+  shrink ARGV[0], ARGV[1..-1], truecolor, resample
 end
 
-shrink ARGV[0], ARGV[1..-1], truecolor, resample
+
+main()
+
