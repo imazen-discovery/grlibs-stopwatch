@@ -11,11 +11,8 @@ require 'runner'
 include Math
 
 # Settings:
-RUNS = 5                # Number of times to run each benchmark
+RUNS  = 5                # Number of times to run each benchmark
 SLEEP = 0                # Max number of seconds to sleep between runs
-
-# Global flags
-$minimal = false         # True -> only test on one small image; for testing
 
 # Directories
 ROOT = Dir.pwd
@@ -34,7 +31,7 @@ def benchmarksByCmd(outfh, images, modes, sizes, runs)
   addHeading = true
 
   for mode in modes
-    cmd = "./ruby_tests/gd_resize.rb --interp #{mode} %s #{SIZES.join(' ')}"
+    cmd = "./ruby_tests/gd_resize.rb --interp #{mode} %s #{sizes.join(' ')}"
     fields = sizes.map{|s| s.to_s}
 
     for img in images
@@ -84,15 +81,54 @@ end
 
 def go
 
+  # Parameters
+  sizes = SIZES
+  runs = RUNS
+  maximages = -1    # As many as are present
+
   # Options
   keep = false
+  modes = []
 
   # Parse the options
   OptionParser.new do |opts|
-    opts.banner = "Usage: #{__FILE__} [--keep] <tag> ..."
+    opts.banner = "Usage: #{__FILE__} [FLAGS] <image> ..."
     opts.on('--keep',    "Do not delete temp. files.") {keep = true}
-    opts.on('--minimal', "Only test for one small image.") {$minimal = true}
+
+    opts.on('--minimal', "Only test for one small image.") {
+      sizes = sizes[0..2]
+      runs = 1
+      maximages = 1
+    }
+
+    opts.on('--mode MODE', "Use interpolation mode MODE.") {|m|
+      raise "Unknown mode: #{m}" unless MODES.include?(m)
+      modes.push m
+    }
+
+    opts.on('--max-images N', OptionParser::DecimalInteger, 
+            "Only process the first N images.") {|n|
+      maximages = n
+    }
+
+    opts.on('--runs N', OptionParser::DecimalInteger, 
+            "Run each test N times.") {|n|
+      runs = n
+    }
+
   end.parse!
+
+  # If no modes given, do them all.
+  modes = MODES unless modes.size > 0
+
+  # Get the images to process.
+  images = ARGV
+  if images.size == 0
+    images = Dir.glob("#{DATADIR}/*.jpg").sort
+    images = images.select{|f| f != 'pic1.jpg'} # The unused image
+  end
+  images = images[0..(maximages - 1)] if maximages > 0
+  images.map!{|f| File.expand_path(f)}    # So we can chdir()
 
   # Create the tmp directory
   cleantmp()   # Clear the old TMP if the last run was interrupted
@@ -101,13 +137,10 @@ def go
 
   # Do the tests from inside the tmp directory
   Dir.chdir(TMP) do |path|
-    images = Dir.glob("#{DATADIR}/*.jpg").sort
-    images = images.select{|f| f != 'pic1.jpg'} # The unused image
-    
     File.open(OUTPUT, "w") do |outfh|
       outfh.write("Library Benchmarks\n\n")
 
-      benchmarksByCmd(outfh, images, MODES, SIZES, RUNS)
+      benchmarksByCmd(outfh, images, modes, sizes, runs)
     end
   end
 
