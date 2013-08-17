@@ -16,49 +16,69 @@ require 'timer'
 include Timer
 
 
+MODES = {
+#  'default'             => GD_DEFAULT,
+#  'bell'                => GD_BELL,
+#  'bessel'              => GD_BESSEL,
+  'bilinear_fixed'      => GD_BILINEAR_FIXED,
+#  'bicubic'             => GD_BICUBIC,
+  'bicubic_fixed'       => GD_BICUBIC_FIXED,
+#  'blackman'            => GD_BLACKMAN,
+#  'box'                 => GD_BOX,
+#  'bspline'             => GD_BSPLINE,
+#  'catmullrom'          => GD_CATMULLROM,
+#  'gaussian'            => GD_GAUSSIAN,
+#  'generalized_cubic'   => GD_GENERALIZED_CUBIC,
+  # 'hermite'             => GD_HERMITE,
+  # 'hamming'             => GD_HAMMING,
+  # 'hanning'             => GD_HANNING,
+  # 'mitchell'            => GD_MITCHELL,
+  'nearest_neighbour'   => GD_NEAREST_NEIGHBOUR,
+  # 'power'               => GD_POWER,
+  # 'quadratic'           => GD_QUADRATIC,
+  # 'sinc'                => GD_SINC,
+  # 'triangle'            => GD_TRIANGLE,
+  'weighted4'           => GD_WEIGHTED4,
+}
 
 
-def shrink(imgfile, widths, truecolor, resample)
+
+def shrink(imgfile, widths, truecolor, mode)
   im = nil      # declare in the local scope
-  tc = "-" + (resample ? "rs-" : "")
+  tc = "-" # + (resample ? "rs-" : "")
 
   time(imgfile, "Load") {im = Image.import(imgfile)}
 
-  time imgfile, "Converting to #{truecolor ? 'true color' : 'indexed'}." do
-    if truecolor
+  # Force input object to truecolor if needed.
+  if truecolor && !im.true_color?
+    time imgfile, "Converting to #{truecolor ? 'true color' : 'indexed'}." do
       im = im.to_true_color()
       tc += "tc-"
-    else
-      im = im.to_indexed_color()
     end
   end
 
   base = File.basename(imgfile)
   ext = File.extname(imgfile)
 
+  im.interpolation_method = mode
+  raise "Unable to set interpolation mode." unless 
+    mode == im.interpolation_method
+
   widths.each do |w|
     width = w.to_i
     raise "Invalid width: #{width}" unless
       width > 0 && width % 160 == 0
-    
-#    raise "Only shrinking is currently supported." if width >= im.width
 
-    destWidth = w
+    destWidth = width
     destHeight = ( (im.height * width.to_f) / im.width ).round
 
     result = nil
     time imgfile, width.to_s do
-      result = im.resize(destWidth, destHeight, resample)
+      result = im.resizeInterpolated(destWidth, destHeight)
     end
 
-    # Sanity check
-    raise "Lost truecolor state" unless
-      result.true_color? == truecolor
-    
     ofname = "resize-gd-rb-#{width}#{tc}#{base}"
-
-    # Warn if output file is being overwritten.
-    File.file?(ofname) and puts "Overwriting '#{ofname}'!!!!"
+    moveOldFile(ofname)
 
     time imgfile, "Writing:" do
       result.export(ofname, {:quality => 100})
@@ -69,17 +89,42 @@ def shrink(imgfile, widths, truecolor, resample)
   print_timings()
 end
 
+# Rename file 'name' to something different and (probably) unique
+def moveOldFile(name)
+  return unless File.file?(name)
+
+  count = 0
+  while true
+    count += 1
+    nfn = "#{name}.#{count}"
+
+    if !File.file?(nfn)
+      File.rename(name, nfn)
+      break
+    end
+  end
+end
+
+
+
 def main
   truecolor = false
-  resample = false
+  mode = GD_BILINEAR_FIXED
+
   OptionParser.new do |opts|
     opts.banner = "Usage: #{__FILE__} <filename> <width> ..."
-    opts.on('--truecolor', "Force images to true color instead of indexed.") {
+    opts.on('--force-truecolor', "Force input images to truecolor.") {
       truecolor = true
     }
-    opts.on('--resample', "Resample when resizing; implies --truecolor.") {
-      truecolor = true
-      resample = true
+
+    opts.on('--interp MODE', "Use interpolation mode 'MODE'.") { |im|
+      raise "Unknown interpolation mode '#{im}'" unless MODES.has_key?(im)
+      mode = MODES[im]
+    }
+
+    opts.on('--modes', "List all interpolation modes and exit.") {
+      print "Interpolation modes:\n\t", MODES.keys.sort.join("\n\t"), "\n"
+      exit 0
     }
   end.parse!
 
@@ -88,7 +133,7 @@ def main
     exit 1
   end
 
-  shrink ARGV[0], ARGV[1..-1], truecolor, resample
+  shrink ARGV[0], ARGV[1..-1], truecolor, mode
 end
 
 
