@@ -105,7 +105,7 @@ def benchmarksByCmd(images, outfh, tags)
       next if ext == 'gif' && thisCmd !~ /\.pl/;
 
       Runner.new( thisCmd,
-                  $minimal ? 2 : COUNT,
+                  $minimal ? 3 : COUNT,
                   SLEEP,
                   outfh, 
                   ['', sprintf(cmd, '<fn>'), img, ext],

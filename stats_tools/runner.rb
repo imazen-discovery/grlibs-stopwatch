@@ -95,20 +95,21 @@ class Runner
   def make_result_set
     results = []
 
-    fieldSet = all_fields()
-    fieldVals = values_for_fields(fieldSet)
-
-    results.push(@leaders.clone.map!{|a| ''} + ['Category', 'Mean Time(ms)',
-                                                'Median Time', 'Min Time',
-                                                'Max Time', 'Range']
+    results.push(@leaders.clone.map!{|a| ''} +
+                 ['Category', 'Mean Time(ms)', 'Median Time', 'Min Time',
+                  'Max Time', 'Range','First Run']
                  ) if @addHeading
     @addHeading = false
 
+    fieldSet = all_fields()
+    fieldVals = values_for_fields(fieldSet)
+
     for f in fieldSet
       fv = fieldVals[f]
+      first = fv.shift
 
       row = @leaders.clone
-      row += [f, fv.mean, fv.median, fv.min, fv.max, fv.max - fv.min]
+      row += [f, fv.mean, fv.median, fv.min, fv.max, fv.max - fv.min, first]
 
       results.push row
     end
