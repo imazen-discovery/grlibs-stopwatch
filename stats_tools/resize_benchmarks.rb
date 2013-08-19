@@ -96,7 +96,7 @@ def go
 
     opts.on('--minimal', "Only test for one small image.") {
       sizes = sizes[0..2]
-      runs = 1
+      runs = 2
       maximages = 1
     }
 
