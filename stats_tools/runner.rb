@@ -117,12 +117,11 @@ class Runner
   end
 
   # Return a hash mapping each field name in 'fields' to an array of
-  # all of the times for that field (or -1 if a run didn't have a
-  # value for it.)
+  # all of the times for that field.
   def values_for_fields(fields)
     result = {}
     for f in fields
-      result[f] = @times.map{|r| r[f] || -1}
+      result[f] = @times.map{|r| r[f] or raise "Missing field: #{r}"}
     end
     return result
   end
