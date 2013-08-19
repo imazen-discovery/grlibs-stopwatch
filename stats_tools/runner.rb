@@ -30,16 +30,24 @@ class Runner
   end
 
   def run()
+    print @cmd, " ["
+    STDOUT.flush()
+
     for n in 1 .. @count
-      print "\tRun #{n}: "
+      print n
+      STDOUT.flush()
       @times.push(run_once())
 
       if @sleep > 0
         zzz = rand(@sleep) + 1
-        print "\tSleeping #{zzz} seconds."
+
+        print "(sleep #{zzz})"
+        STDOUT.flush()
+
         sleep(zzz)
       end
     end
+    puts "]"
   end
 
   def write()

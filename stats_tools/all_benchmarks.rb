@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-# Run all of the benchmarks.
+# Run all (at the time) of the benchmarks.
 
 require 'optparse'
 require 'set'
@@ -104,7 +104,6 @@ def benchmarksByCmd(images, outfh, tags)
       # VIPS can't handle GIF
       next if ext == 'gif' && thisCmd !~ /\.pl/;
 
-      puts "\t#{thisCmd}"
       Runner.new( thisCmd,
                   $minimal ? 2 : COUNT,
                   SLEEP,

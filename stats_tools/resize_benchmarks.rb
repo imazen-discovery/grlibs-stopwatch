@@ -31,7 +31,7 @@ def benchmarksByCmd(outfh, images, modes, sizes, runs)
   addHeading = true
 
   for mode in modes
-    cmd = "./ruby_tests/gd_resize.rb --interp #{mode} %s #{sizes.join(' ')}"
+    cmd = "ruby_tests/gd_resize.rb --interp #{mode} %s #{sizes.join(' ')}"
     fields = sizes.map{|s| s.to_s}
 
     for img in images
@@ -45,7 +45,6 @@ def benchmarksByCmd(outfh, images, modes, sizes, runs)
       # VIPS can't handle GIF
       next if ext == 'gif' && thisCmd !~ /\.pl/;
 
-      puts "\t#{thisCmd}"
       Runner.new( thisCmd,
                   runs,
                   SLEEP,
