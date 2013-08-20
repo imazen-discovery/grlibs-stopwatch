@@ -55,7 +55,10 @@ class Runner
 
   def write()
     results = make_result_set()
-    results.each {|row| @out.write(row.join("\t") + "\n")}
+    results.each {|row| 
+      row = row.map{|elem| elem.is_a?(Float) ? ("%.3f" % elem) : elem }
+      @out.write(row.join("\t") + "\n")
+    }
   end
 
   def done()

@@ -49,7 +49,7 @@ def benchmarksByCmd(outfh, images, modes, sizes, runs)
                   runs,
                   SLEEP,
                   outfh, 
-                  ['', sprintf(cmd, '<fn>'), img, ext],
+                  ['', sprintf(cmd, '<fn>'), File.basename(img), ext],
                   fields,
                   addHeading
                   ).go()
