@@ -43,9 +43,10 @@ MODES = {
 
 
 
-def shrink(imgfile, widths, truecolor, mode)
+def shrink(imgfile, widths, truecolor, modeName)
   im = nil      # declare in the local scope
-  tc = "-" # + (resample ? "rs-" : "")
+  tc = "-"
+  mode = MODES[modeName]
 
   time(imgfile, "Load") {im = Image.import(imgfile)}
 
@@ -77,7 +78,7 @@ def shrink(imgfile, widths, truecolor, mode)
       result = im.resizeInterpolated(destWidth, destHeight)
     end
 
-    ofname = "resize-gd-rb-#{width}#{tc}#{base}"
+    ofname = "resize-gd-rb-#{width}#{tc}-#{modeName}-#{base}"
     moveOldFile(ofname)
 
     time imgfile, "Writing:" do
@@ -109,7 +110,7 @@ end
 
 def main
   truecolor = false
-  mode = GD_BILINEAR_FIXED
+  mode = 'bilinear_fixed' #GD_BILINEAR_FIXED
 
   OptionParser.new do |opts|
     opts.banner = "Usage: #{__FILE__} <filename> <width> ..."
@@ -119,7 +120,7 @@ def main
 
     opts.on('--interp MODE', "Use interpolation mode 'MODE'.") { |im|
       raise "Unknown interpolation mode '#{im}'" unless MODES.has_key?(im)
-      mode = MODES[im]
+      mode = im
     }
 
     opts.on('--modes', "List all interpolation modes and exit.") {
