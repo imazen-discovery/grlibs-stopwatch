@@ -3,10 +3,12 @@ VIPS=vips
 #VIPS=vips-7.26
 
 CC=gcc
-CFLAGS=-Wall -O -g `pkg-config $(VIPS) --cflags` `pkg-config gdlib --cflags`
+#DBG=-pg
+DBG=-g
+CFLAGS=-Wall -O $(DBG) `pkg-config $(VIPS) --cflags` `pkg-config gdlib --cflags`
 
 LD=gcc
-LDFLAGS=-g
+LDFLAGS=$(DBG)
 LIBVIPS=`pkg-config $(VIPS) --libs`
 LIBGD=`pkg-config gdlib --libs`
 
