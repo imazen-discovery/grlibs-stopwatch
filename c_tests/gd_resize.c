@@ -79,7 +79,7 @@ main(int argc, char *argv[]) {
         fclose(in);
     }
 
-    gdImageSetInterpolationMethod(im, GD_BICUBIC_FIXED);
+    gdImageSetInterpolationMethod(im, GD_BICUBIC); //GD_BICUBIC_FIXED);
 
     {
         int n;

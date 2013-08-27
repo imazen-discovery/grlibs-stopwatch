@@ -9,8 +9,8 @@ CFLAGS=-Wall -O $(DBG) `pkg-config $(VIPS) --cflags` `pkg-config gdlib --cflags`
 
 LD=gcc
 LDFLAGS=$(DBG)
-LIBVIPS=`pkg-config $(VIPS) --libs`
-LIBGD=`pkg-config gdlib --libs` #-lprofiler
+LIBVIPS=#`pkg-config $(VIPS) --libs`
+LIBGD= -lm `pkg-config gdlib --libs`#-lprofiler
 
 all: vips_shrink stats benchmark gd_resize
 
