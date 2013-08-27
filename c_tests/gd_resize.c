@@ -9,6 +9,8 @@
 #include <stdlib.h>
 #include <math.h>
 
+//#include <google/profiler.h>
+
 #include <gd.h>
 
 #include "util.h"

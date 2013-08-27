@@ -32,3 +32,9 @@ gdb
 libtiff4-dev
 libxpm-dev
 #cpanminus
+
+# Google profiler stuff
+#google-perftools
+#libgoogle-perftools-dev
+
+
