@@ -11,6 +11,22 @@ GDDIR=../../gd-libgd/src
 GDBLD_DIR=$GDDIR/.libs/
 
 cd `dirname $0`
+
+pushd ../../gd-libgd
+if make -q; then
+    echo "Lib is up to date."
+else
+    make clean
+    make -j 4
+
+    echo
+    echo
+    echo "Installing:"
+    sudo make install
+    sudo ldconfig
+fi
+popd
+
 cd ../c_tests/
 
 #gcc -g -O -Wall -I$GDDIR  -L$GDBLD_DIR gd_resize.c timer.c util.c -lgd -o gd_resize 
