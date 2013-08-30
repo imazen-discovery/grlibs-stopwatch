@@ -79,17 +79,17 @@ main(int argc, char *argv[]) {
         fclose(in);
     }
 
-    gdImageSetInterpolationMethod(im, GD_BICUBIC_FIXED);
-
     {
         int n;
 
         for (n = 0; widths[n]; n++) {
-            gdImagePtr dest;
+            gdImagePtr dest, dest2;
             int width = widths[n];
             int height = (int) round( 
                 ((double)gdImageSY(im) * (double)width) / (double)gdImageSX(im)
                 );
+
+            gdImageSetInterpolationMethod(im, GD_BICUBIC_FIXED2);
 
             timer_start(ifile, "%d", width);
             dest = gdImageScale(im, width, height);
@@ -98,8 +98,22 @@ main(int argc, char *argv[]) {
             check(!!dest, "Scale op failed.");
 
             save(dest, ofile_tpl, width);
+
+
+            gdImageSetInterpolationMethod(im, GD_BICUBIC_FIXED);
+
+            timer_start(ifile, "%d-old", width);
+            dest2 = gdImageScale(im, width, height);
+            timer_done();
+
+            check(!!dest2, "Scale op failed.");
+
+            save(dest2, ofile_tpl, width+1);
+
+            check(!gdImageCompare(dest, dest2), "Resulting images differ.");
             
             gdImageDestroy(dest);
+            gdImageDestroy(dest2);
         }/* for */
     }
 
