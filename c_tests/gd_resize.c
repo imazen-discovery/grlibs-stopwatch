@@ -38,11 +38,13 @@ getwidths(int argc, char *argv[], int widths[], size_t widthsSize) {
 
 
 void
-save(gdImagePtr img, const char *template, int width) {
+save(gdImagePtr img, int pass, const char *template, const char *extra,
+     int width) {
     char oname[255];
     FILE *outfile;
 
-    snprintf(oname, sizeof(oname), "%s-%d.jpg", template, width);
+    snprintf(oname, sizeof(oname), "%s%s-%d-%d.jpg", template, extra, pass, 
+             width);
 
     outfile = fopen(oname, "w");
     check(!!outfile, "Unable to open '%s' for writing.", oname);
@@ -53,13 +55,34 @@ save(gdImagePtr img, const char *template, int width) {
 }/* save*/
 
 
+gdImagePtr
+shrink(gdImagePtr im, int pass, int width, const char *ifile, const char *tpl,
+       const char *extra, gdInterpolationMethod mode) {
+    gdImagePtr dest;
+    int height = (int) round( 
+        ((double)gdImageSY(im) * (double)width) / (double)gdImageSX(im)
+        );
+
+    gdImageSetInterpolationMethod(im, mode);
+
+    timer_start(ifile, "%d%s-%d", width, extra, pass);
+    dest = gdImageScale(im, width, height);
+    timer_done();
+
+    check(!!dest, "Scale op failed.");
+
+    save(dest, pass, tpl, extra, width);
+
+    return dest;
+}/* shrink*/
+
+
 int
 main(int argc, char *argv[]) {
     /* Declare the image */
     gdImagePtr im;
     char *ifile, *ofile_tpl;
     int widths[100];
-
     
     check(argc >= 4, "usage: gd_resize <input> <output> <width> ...");
 
@@ -84,36 +107,20 @@ main(int argc, char *argv[]) {
 
         for (n = 0; widths[n]; n++) {
             gdImagePtr dest, dest2;
+            gdImagePtr dest3;
             int width = widths[n];
-            int height = (int) round( 
-                ((double)gdImageSY(im) * (double)width) / (double)gdImageSX(im)
-                );
 
-            gdImageSetInterpolationMethod(im, GD_BICUBIC_FIXED2);
+            dest = shrink(im, n, width, ifile, ofile_tpl, "", GD_BICUBIC_FIXED2);
+            dest2 = shrink(im, n, width, ifile, ofile_tpl,"orig",GD_BICUBIC_FIXED);
+            dest3 = shrink(im, n, width, ifile, ofile_tpl, "float", GD_BICUBIC);
 
-            timer_start(ifile, "%d", width);
-            dest = gdImageScale(im, width, height);
-            timer_done();
+            if(gdImageCompare(dest, dest2)) {
+                printf("Resulting images differ.\n");
+            }/* if*/
 
-            check(!!dest, "Scale op failed.");
-
-            save(dest, ofile_tpl, width);
-
-
-            gdImageSetInterpolationMethod(im, GD_BICUBIC_FIXED);
-
-            timer_start(ifile, "%d-old", width);
-            dest2 = gdImageScale(im, width, height);
-            timer_done();
-
-            check(!!dest2, "Scale op failed.");
-
-            save(dest2, ofile_tpl, width+1);
-
-            check(!gdImageCompare(dest, dest2), "Resulting images differ.");
-            
             gdImageDestroy(dest);
             gdImageDestroy(dest2);
+            gdImageDestroy(dest3);
         }/* for */
     }
 
