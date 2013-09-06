@@ -5,7 +5,7 @@
 set -e
 
 #VG=valgrind tool=callgrind
-VG="gdb --args"
+#VG="cgdb -- --args"
 
 GDDIR=../../gd-libgd/src
 GDBLD_DIR=$GDDIR/.libs/
@@ -30,13 +30,17 @@ cd `dirname $0`
 
 cd ../c_tests/
 
-#gcc -g -O -Wall -I$GDDIR  -L$GDBLD_DIR gd_resize.c timer.c util.c -lgd -o gd_resize 
+echo "Compiling..."
+time \
 gcc -g -O -Wall `pkg-config gdlib --libs --cflags` \
     gd_resize.c timer.c util.c \
     -lgd -lm -o gd_resize 
+echo
 
 #export LD_LIBRARY_PATH=../../
+#$VG ./gd_resize ../data/8s.jpg out 1600 # Exactly half the size
 $VG ./gd_resize ../data/8s.jpg out 2080 2080 # 2080 2080 2080 
+#$VG ./gd_resize ../data/8s.jpg out 4160 4160 # 2080 2080 2080 
 
 
 
