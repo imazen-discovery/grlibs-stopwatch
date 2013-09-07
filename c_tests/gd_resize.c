@@ -55,18 +55,35 @@ save(gdImagePtr img, int pass, const char *template, const char *extra,
 }/* save*/
 
 
+#define CLASSIC_RESIZE_RS -1
+#define CLASSIC_RESIZE    -2
+
 gdImagePtr
 shrink(gdImagePtr im, int pass, int width, const char *ifile, const char *tpl,
-       const char *extra, gdInterpolationMethod mode) {
+       const char *extra, int mode) {
     gdImagePtr dest;
     int height = (int) round( 
         ((double)gdImageSY(im) * (double)width) / (double)gdImageSX(im)
         );
 
-    gdImageSetInterpolationMethod(im, mode);
+    if (mode >= 0) {
+        gdImageSetInterpolationMethod(im, mode);
+    }
 
     timer_start(ifile, "%d%s-%d", width, extra, pass);
-    dest = gdImageScale(im, width, height);
+    if (mode == CLASSIC_RESIZE_RS) {
+        dest = gdImageCreateTrueColor(width, height);
+        gdImageCopyResampled(dest, im, 0, 0, 0, 0,
+                             width, height,
+                             im->sx, im->sy);
+    } else if (mode == CLASSIC_RESIZE) {
+        dest = gdImageCreateTrueColor(width, height);
+        gdImageCopyResized(dest, im, 0, 0, 0, 0,
+                           width, height,
+                           im->sx, im->sy);
+    } else {
+        dest = gdImageScale(im, width, height);
+    }/* if .. else*/
     timer_done();
 
     check(!!dest, "Scale op failed.");
@@ -106,13 +123,16 @@ main(int argc, char *argv[]) {
         int n;
 
         for (n = 0; widths[n]; n++) {
-            gdImagePtr dest, dest2;
-            gdImagePtr dest3;
+            gdImagePtr dest, dest2, dest3, dest4, dest5;
             int width = widths[n];
 
             dest = shrink(im, n, width, ifile, ofile_tpl, "", GD_BICUBIC_FIXED2);
             dest2 = shrink(im, n, width, ifile, ofile_tpl,"orig",GD_BICUBIC_FIXED);
             dest3 = shrink(im, n, width, ifile, ofile_tpl, "float", GD_BICUBIC);
+            dest4 = shrink(im, n, width, ifile, ofile_tpl, "classic-resampled",
+                           CLASSIC_RESIZE_RS);
+            dest5 = shrink(im, n, width, ifile, ofile_tpl, "classic-resize",
+                           CLASSIC_RESIZE);
 
             if(gdImageCompare(dest, dest2)) {
                 printf("Resulting images differ.\n");
@@ -121,6 +141,8 @@ main(int argc, char *argv[]) {
             gdImageDestroy(dest);
             gdImageDestroy(dest2);
             gdImageDestroy(dest3);
+            gdImageDestroy(dest4);
+            gdImageDestroy(dest5);
         }/* for */
     }
 
