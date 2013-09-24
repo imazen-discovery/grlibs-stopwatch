@@ -1,10 +1,4 @@
 
-/* We use assert for error checking, so it shouldn't be disabled. */
-#ifdef NDEBUG
-#undef NDEBUG
-#endif
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -126,7 +120,7 @@ main(int argc, char *argv[]) {
             gdImagePtr dest, dest2, dest3, dest4, dest5;
             int width = widths[n];
 
-            dest = shrink(im, n, width, ifile, ofile_tpl, "", GD_BICUBIC_FIXED2);
+            dest = shrink(im, n, width, ifile, ofile_tpl, "", GD_BICUBIC_FIXED);//2);
             dest2 = shrink(im, n, width, ifile, ofile_tpl,"orig",GD_BICUBIC_FIXED);
             dest3 = shrink(im, n, width, ifile, ofile_tpl, "float", GD_BICUBIC);
             dest4 = shrink(im, n, width, ifile, ofile_tpl, "classic-resampled",

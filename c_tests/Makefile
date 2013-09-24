@@ -5,14 +5,15 @@ VIPS=vips
 CC=gcc
 #DBG=-pg
 DBG=-g
-CFLAGS=-Wall -O $(DBG) `pkg-config $(VIPS) --cflags` `pkg-config gdlib --cflags`
+CFLAGS=-Wall -O $(DBG) `pkg-config gdlib --cflags` #  `pkg-config $(VIPS) --cflags`
 
 LD=gcc
 LDFLAGS=$(DBG)
 LIBVIPS=#`pkg-config $(VIPS) --libs`
 LIBGD= -lm `pkg-config gdlib --libs`#-lprofiler
 
-all: vips_shrink stats benchmark gd_resize
+#all: vips_shrink stats benchmark gd_resize
+all: gd_resize
 
 vips_shrink: vips_shrink.o timer.o util.o
 	$(LD) $(LDFLAGS) -o $@ $^ $(LIBVIPS)  
