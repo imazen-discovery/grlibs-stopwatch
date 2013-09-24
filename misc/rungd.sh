@@ -37,6 +37,8 @@ gcc -g -O -Wall `pkg-config gdlib --libs --cflags` \
     -lgd -lm -o gd_resize 
 echo
 
+#export MALLOC_CHECK_=
+
 #export LD_LIBRARY_PATH=../../
 #$VG ./gd_resize ../data/8s.jpg out 1600 # Exactly half the size
 $VG ./gd_resize ../data/8s.jpg out 2080 2080 # 2080 2080 2080 
