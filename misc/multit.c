@@ -44,7 +44,7 @@ GetWeights(int width, int winsize) {
         result[n].nweights = winsize;
 
         for (i = 0; i < winsize; i++) {
-            result[n].weights[i] = (double)i / (double) n;
+            result[n].weights[i] = 0.123; //2.4209216646221081e-322;
         }/* for */
     }/* for */
 
