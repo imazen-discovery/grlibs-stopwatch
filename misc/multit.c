@@ -87,7 +87,7 @@ FakeShrink(Img *src, Img *dest, Entry *weights) {
     for (y = 0; y < dest->height; y++) {
         for (x = 0; x < dest->width; x++) {
             int result = 0;
-            for (w = 0; w < weights[x].nweights; w++) {
+            for (w = 0; w < weights[x].nweights; w++) { // <--- HERE
                 result += src->data[y][w+x] * weights[x].weights[w];
             }/* for */
             dest->data[y][x] = result;
@@ -100,7 +100,7 @@ FakeShrink(Img *src, Img *dest, Entry *weights) {
 int main() {
     const int SRCW = 6400, SRCH = 4266;
     const int DESTW = 4160, DESTH = SRCH;//1386;
-    const int WIN = 2;
+    const int WIN = 5;
 
     Entry *weights;
     Img *src, *dest;
