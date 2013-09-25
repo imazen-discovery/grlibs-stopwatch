@@ -15,6 +15,7 @@ exit $?
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "timer.h"
 #include "util.h"
@@ -40,6 +41,7 @@ GetWeights(int width, int winsize) {
     for (n = 0; n < width; n++) {
         result[n].weights = malloc(winsize * sizeof(double));
         check(!!result[n].weights, "malloc failed");
+        result[n].nweights = winsize;
 
         for (i = 0; i < winsize; i++) {
             result[n].weights[i] = (double)i / (double) n;
@@ -87,6 +89,7 @@ FakeShrink(Img *src, Img *dest, Entry *weights, int overrun) {
     for (y = 0; y < dest->height; y++) {
         for (x = 0; x < dest->width; x++) {
             int result = 0;
+            //assert(weights[x].nweights == 5);
             for (w = 0; w < weights[x].nweights + overrun; w++) {
                 result += src->data[y][w+x] * weights[x].weights[w];
             }/* for */
@@ -95,6 +98,13 @@ FakeShrink(Img *src, Img *dest, Entry *weights, int overrun) {
     }/* for */
 }/* FakeShrink*/
 
+
+static void
+TimedFakeShrink(Img *src, Img *dest, Entry *weights, int overrun) {
+    timer_start("x", "fs overrun=%d", overrun);
+    FakeShrink(src, dest, weights, overrun);
+    timer_done();
+}
 
 
 int main() {
@@ -113,9 +123,7 @@ int main() {
     timer_done();
 
     for (n = 0; n <= 3; n++) {
-        timer_start("x", "fs overrun=%d", n);
-        FakeShrink(src, dest, weights, n);
-        timer_done();
+        TimedFakeShrink(src, dest, weights, n);
     }/* for */
 
     print_times();
