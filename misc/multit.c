@@ -1,103 +1,121 @@
+#/*
+
+# Via the magic of C hackery, this program will compile itself when
+# run as a shell script (if your system is set up perfectly correctly,
+# that is.)
+
+gcc -g -Wall $0 -o ${0%.c} -I../c_tests ../c_tests/util.c ../c_tests/timer.c \
+    && \
+    ./${0%.c}
+
+exit $?
+
+#*/
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "timer.h"
+#include "util.h"
+
+typedef struct {
+	double *weights;
+    int nweights;
+} Entry;
+
+typedef struct {
+    int width, height;
+    int **data;
+} Img;
+
+static Entry *
+GetWeights(int width, int winsize) {
+    Entry *result;
+    int n, i;
+
+    result = malloc(width * sizeof(Entry));
+    check(!!result, "malloc failed");
+
+    for (n = 0; n < width; n++) {
+        result[n].weights = malloc(winsize * sizeof(double));
+        check(!!result[n].weights, "malloc failed");
+
+        for (i = 0; i < winsize; i++) {
+            result[n].weights[i] = (double)i / (double) n;
+        }/* for */
+    }/* for */
+
+    return result;
+}/* GetWeights*/
+
+static Img *
+GetImg(int width, int height) {
+    Img *result;
+    int **data;
+    int y, x;
+
+    data = malloc(height * sizeof(int *));
+    check(!!data, "malloc");
+
+    for (y = 0; y < height; y++) {
+        data[y] = malloc(width * sizeof(int));
+        check(!!data[y], "malloc");
+
+        for (x = 0; x < width; x++) {
+            data[y][x] = (x+y) | ((x + y) << 16);
+        }/* for */
+    }/* for */
+
+    result = malloc(sizeof(Img));
+    check(!!result, "malloc");
+    
+    result->width = width;
+    result->height = height;
+    result->data = data;
+
+    return result;
+}/* GetImg*/
+
+static void
+FakeShrink(Img *src, Img *dest, Entry *weights) {
+    int x, y, w;
+
+    check(src->height == dest->height, "heights");
+    check(src->width > dest->width, "widths");
+
+    for (y = 0; y < dest->height; y++) {
+        for (x = 0; x < dest->width; x++) {
+            int result = 0;
+            for (w = 0; w < weights[x].nweights; w++) {
+                result += src->data[y][w+x] * weights[x].weights[w];
+            }/* for */
+            dest->data[y][x] = result;
+        }/* for */
+    }/* for */
+}/* FakeShrink*/
 
 
 
+int main() {
+    const int SRCW = 6400, SRCH = 4266;
+    const int DESTW = 4160, DESTH = SRCH;//1386;
+    const int WIN = 2;
 
+    Entry *weights;
+    Img *src, *dest;
 
-typedef struct
-{
-	double *Weights;  /* Normalized weights of neighboring pixels */
-	int Left,Right;   /* Bounds of source pixels window */
-} ContributionType;  /* Contirbution information for a single pixel */
+    timer_start("x", "setup");
+    src = GetImg(SRCW, SRCH);
+    dest = GetImg(DESTW, DESTH);
+    weights = GetWeights(DESTW, WIN);
+    timer_done();
 
-typedef struct
-{
-	ContributionType *ContribRow; /* Row (or column) of contribution weights */
-	unsigned int WindowSize,      /* Filter window size (of affecting source pixels) */
-		     LineLength;      /* Length of line (no. or rows / cols) */
-} LineContribType;
+    timer_start("x", "fake shrink");
+    FakeShrink(src, dest, weights);
+    timer_done();
 
+    print_times();
 
-static inline LineContribType * _gdContributionsAlloc(unsigned int line_length, unsigned int windows_size)
-{
-	unsigned int u = 0;
-	LineContribType *res;
-
-	res = (LineContribType *) gdMalloc(sizeof(LineContribType));
-	if (!res) {
-		return NULL;
-	}
-	res->WindowSize = windows_size;
-	res->LineLength = line_length;
-	res->ContribRow = (ContributionType *) gdMalloc(line_length * sizeof(ContributionType));
-
-	for (u = 0 ; u < line_length ; u++) {
-		res->ContribRow[u].Weights = (double *) gdMalloc(windows_size * sizeof(double));
-	}
-	return res;
-}
-
-
-static LineContribType *_gdContributionsCalc(unsigned int line_size, unsigned int src_size, double scale_d,  const interpolation_method pFilter)
-{
-	double width_d;
-	double scale_f_d = 1.0;
-	const double filter_width_d = DEFAULT_BOX_RADIUS;
-	int windows_size;
-	unsigned int u;
-	LineContribType *res;
-
-	if (scale_d < 1.0) {
-		width_d = filter_width_d / scale_d;
-		scale_f_d = scale_d;
-	}  else {
-		width_d= filter_width_d;
-	}
-
-	windows_size = 2 * (int)ceil(width_d) + 1;
-	res = _gdContributionsAlloc(line_size, windows_size);
-
-	for (u = 0; u < line_size; u++) {
-		const double dCenter = (double)u / scale_d;
-		/* get the significant edge points affecting the pixel */
-		register int iLeft = MAX(0, (int)floor (dCenter - width_d));
-		int iRight = MIN((int)ceil(dCenter + width_d), (int)src_size - 1);
-		double dTotalWeight = 0.0;
-		int iSrc;
-
-		res->ContribRow[u].Left = iLeft;
-		res->ContribRow[u].Right = iRight;
-
-		/* Cut edge points to fit in filter window in case of spill-off */
-		if (iRight - iLeft + 1 > windows_size)  {
-			if (iLeft < ((int)src_size - 1 / 2))  {
-				iLeft++;
-			} else {
-				iRight--;
-			}
-		}
-
-        assert( abs(res->ContribRow[u].Right - res->ContribRow[u].Left) - abs(iRight - iLeft) <= 1);
-//        printf("%d - %d = %d, %d - %d = %d\n", res->ContribRow[u].Right, res->ContribRow[u].Left, res->ContribRow[u].Right - res->ContribRow[u].Left, iRight, iLeft, iRight-iLeft);
-
-#if 0
-		res->ContribRow[u].Left = iLeft;
-		res->ContribRow[u].Right = iRight;
-#endif
-
-		for (iSrc = iLeft; iSrc <= iRight; iSrc++) {
-			dTotalWeight += (res->ContribRow[u].Weights[iSrc-iLeft] =  scale_f_d * (*pFilter)(scale_f_d * (dCenter - (double)iSrc)));
-		}
-
-		if (dTotalWeight < 0.0) {
-			_gdContributionsFree(res);
-			return NULL;
-		}
-
-		if (dTotalWeight > 0.0) {
-			for (iSrc = iLeft; iSrc <= iRight; iSrc++) {
-				res->ContribRow[u].Weights[iSrc-iLeft] /= dTotalWeight;
-			}
-		}
-	}
-	return res;
-}
+    return 0;
+}/* main*/
