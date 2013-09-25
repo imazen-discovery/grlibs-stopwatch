@@ -3,25 +3,31 @@ VIPS=vips
 #VIPS=vips-7.26
 
 CC=gcc
-CFLAGS=-Wall -O -g `pkg-config $(VIPS) --cflags`
+CFLAGS=-Wall -O -g `pkg-config $(VIPS) --cflags` `pkg-config gdlib --cflags`
 
 LD=gcc
 LDFLAGS=-g
-LIBS=`pkg-config $(VIPS) --libs`
+VIPSLIBS=`pkg-config $(VIPS) --libs`
+GDLIBS=`pkg-config gdlib --libs` -lm
 
-all: vips_shrink stats benchmark
+all: vips_shrink stats benchmark gd_scale
 
 vips_shrink: vips_shrink.o timer.o util.o
-	$(LD) $(LDFLAGS) -o $@ $^ $(LIBS)  
+	$(LD) $(LDFLAGS) -o $@ $^ $(VIPSLIBS)  
 
 stats: stats.o timer.o util.o
-	$(LD) $(LDFLAGS) -o $@ $^ $(LIBS)
+	$(LD) $(LDFLAGS) -o $@ $^ $(VIPSLIBS)
 
 benchmark: benchmark.o timer.o util.o
-	$(LD) $(LDFLAGS) -o $@ $^ $(LIBS)
+	$(LD) $(LDFLAGS) -o $@ $^ $(VIPSLIBS)
+
+gd_scale: gd_scale.o timer.o util.o
+	$(LD) $(LDFLAGS) -o $@ $^ $(GDLIBS)
+
 
 timer.o: timer.c
 util.o: util.c
+
 
 clean:
 	-rm *.o vips_shrink stats benchmark
