@@ -78,7 +78,7 @@ GetImg(int width, int height) {
 }/* GetImg*/
 
 static void
-FakeShrink(Img *src, Img *dest, Entry *weights) {
+FakeShrink(Img *src, Img *dest, Entry *weights, int overrun) {
     int x, y, w;
 
     check(src->height == dest->height, "heights");
@@ -87,7 +87,7 @@ FakeShrink(Img *src, Img *dest, Entry *weights) {
     for (y = 0; y < dest->height; y++) {
         for (x = 0; x < dest->width; x++) {
             int result = 0;
-            for (w = 0; w < weights[x].nweights; w++) { // <--- HERE
+            for (w = 0; w < weights[x].nweights + overrun; w++) {
                 result += src->data[y][w+x] * weights[x].weights[w];
             }/* for */
             dest->data[y][x] = result;
@@ -104,6 +104,7 @@ int main() {
 
     Entry *weights;
     Img *src, *dest;
+    int n;
 
     timer_start("x", "setup");
     src = GetImg(SRCW, SRCH);
@@ -111,9 +112,11 @@ int main() {
     weights = GetWeights(DESTW, WIN);
     timer_done();
 
-    timer_start("x", "fake shrink");
-    FakeShrink(src, dest, weights);
-    timer_done();
+    for (n = 0; n <= 3; n++) {
+        timer_start("x", "fs overrun=%d", n);
+        FakeShrink(src, dest, weights, n);
+        timer_done();
+    }/* for */
 
     print_times();
 
