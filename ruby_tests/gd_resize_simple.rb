@@ -42,7 +42,7 @@ MODES = {
 
 
 
-def shrink(imgfile, width, output, truecolor, modeName)
+def shrink(imgfile, width, height, output, truecolor, modeName)
   mode = MODES[modeName]
   raise "Invalid mode '#{modeName}'." unless mode
 
@@ -58,13 +58,12 @@ def shrink(imgfile, width, output, truecolor, modeName)
   raise "Unable to set interpolation mode." unless 
     mode == im.interpolation_method
 
-  raise "Invalid width: #{width}" unless
-    width > 0 && width % 160 == 0
+  raise "Invalid dimension: #{width}x#{height}" unless
+    width > 0 && height > 0
   
-  destWidth = width
-  destHeight = ( (im.height * width.to_f) / im.width ).round
+#  destHeight = ( (im.height * width.to_f) / im.width ).round
 
-  result = im.resizeInterpolated(destWidth, destHeight)
+  result = im.resizeInterpolated(width, height)
 
   moveOldFile(output)
 
@@ -73,7 +72,7 @@ def shrink(imgfile, width, output, truecolor, modeName)
   when :jpg, :jpeg
     opts[:quality] = 100
     
-    # ... more goes here ...
+    # ... more goes here, maybe ...
   end
 
   result.export(output, opts)
@@ -120,12 +119,12 @@ def main
     }
   end.parse!
 
-  if ARGV.size != 3
-    puts "USAGE: resize <input> <width> <output>"
+  if ARGV.size != 4
+    puts "USAGE: resize <input> <width> <height> <output>"
     exit 1
   end
 
-  shrink ARGV[0], ARGV[1].to_i, ARGV[2], truecolor, mode
+  shrink ARGV[0], ARGV[1].to_i, ARGV[2].to_i, ARGV[3], truecolor, mode
 end
 
 
