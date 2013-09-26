@@ -17,7 +17,7 @@ if [ ! -f Makefile ]; then
     ./autogen.sh
     ./configure --prefix=/usr/local/
 fi
-make
+make -j $CORES
 sudo make install
 sudo ldconfig
 cd ..
@@ -28,7 +28,7 @@ if [ ! -f Makefile ]; then
     ./bootstrap.sh
     ./configure --prefix=/usr/local/ 
 fi
-make
+make -j $CORES
 sudo make install
 sudo ldconfig
 cd ..
@@ -39,7 +39,7 @@ if [ ! -f Makefile ]; then
     ./bootstrap.sh
     ./configure --prefix=/usr/local/ --with-tiff=/usr/lib/ --with-xpm=/usr/lib/
 fi
-make
+make -j $CORES
 sudo make install
 sudo ldconfig
 cd ..
