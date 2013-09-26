@@ -4,6 +4,11 @@
 
 set -e
 
+CORES=1
+if [ -f /vagrant/NUM_CORES ]; then
+    CORES=`cat /vagrant/NUM_CORES`
+fi
+
 cd /vagrant-extra/
 
 echo "Building orc:"
