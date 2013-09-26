@@ -11,6 +11,7 @@ TAGS
 
 # Process temp. files
 BUILD_DIR
+NUM_CORES
 
 # Leftover image files:
 *.tiff
