@@ -23,7 +23,7 @@ import it easily.  In addition, the tools `tabsort.rb` and
 1) Checkout this repository and `cd` to it:
 
     git clone git@github.com:imazen-discovery/grlibs-stopwatch.git
-    cd vips-stopwatch
+    cd grlibs-stopwatch
 
 2) Pick the path to the lib checkout directory:
 
