@@ -42,5 +42,5 @@ for i in ./data/shrunk/[0-9]*; do
 
     $SHRINKCMD data/$IMG.jpg $width $height $shrunk
 
-    compare $ref $shrunk -compose src $diff
+    compare $ref $shrunk $diff
 done
