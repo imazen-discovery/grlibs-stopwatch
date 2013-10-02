@@ -14,7 +14,7 @@ struct Times {
 };
 
 
-#define MAXTIMES 20
+#define MAXTIMES 60
 struct Times times[100];
 unsigned current = 0;
 

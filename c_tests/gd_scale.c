@@ -105,8 +105,10 @@ main(int argc, char *argv[]) {
         FILE *in = fopen(ifile, "r");
         check(!!in, "Error opening '%s'", ifile);
 
+        timer_start(ifile, "loading...");
         im = gdImageCreateFromJpeg(in);
         check(!!im, "Error creating input image object.");
+        timer_done();
 
         fclose(in);
     }

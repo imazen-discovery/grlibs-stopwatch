@@ -16,7 +16,7 @@ proc {
 
 
 MODES = {
-  'default'             => GD_DEFAULT,
+#  'default'             => GD_DEFAULT,
   'bell'                => GD_BELL,
   'bessel'              => GD_BESSEL,
   'bilinear_fixed'      => GD_BILINEAR_FIXED,
@@ -37,7 +37,7 @@ MODES = {
   'quadratic'           => GD_QUADRATIC,
   'sinc'                => GD_SINC,
   'triangle'            => GD_TRIANGLE,
-  'weighted4'           => GD_WEIGHTED4,
+#  'weighted4'           => GD_WEIGHTED4,
 }
 
 
@@ -114,7 +114,7 @@ def main
     }
 
     opts.on('--modes', "List all interpolation modes and exit.") {
-      print "Interpolation modes:\n\t", MODES.keys.sort.join("\n\t"), "\n"
+      print MODES.keys.sort.join("\n"), "\n"
       exit 0
     }
   end.parse!
