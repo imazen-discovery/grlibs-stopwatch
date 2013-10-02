@@ -18,27 +18,27 @@ include Timer
 
 MODES = {
 #  'default'             => GD_DEFAULT,
-#  'bell'                => GD_BELL,
-#  'bessel'              => GD_BESSEL,
-#  'bilinear_fixed'      => GD_BILINEAR_FIXED,
+  'bell'                => GD_BELL,
+  'bessel'              => GD_BESSEL,
+  'bilinear_fixed'      => GD_BILINEAR_FIXED,
   'bicubic'             => GD_BICUBIC,
   'bicubic_fixed'       => GD_BICUBIC_FIXED,
-#  'blackman'            => GD_BLACKMAN,
-#  'box'                 => GD_BOX,
-#  'bspline'             => GD_BSPLINE,
-#  'catmullrom'          => GD_CATMULLROM,
-#  'gaussian'            => GD_GAUSSIAN,
-#  'generalized_cubic'   => GD_GENERALIZED_CUBIC,
-  # 'hermite'             => GD_HERMITE,
-  # 'hamming'             => GD_HAMMING,
-  # 'hanning'             => GD_HANNING,
-  # 'mitchell'            => GD_MITCHELL,
+  'blackman'            => GD_BLACKMAN,
+  'box'                 => GD_BOX,
+  'bspline'             => GD_BSPLINE,
+  'catmullrom'          => GD_CATMULLROM,
+  'gaussian'            => GD_GAUSSIAN,
+  'generalized_cubic'   => GD_GENERALIZED_CUBIC,
+  'hermite'             => GD_HERMITE,
+  'hamming'             => GD_HAMMING,
+  'hanning'             => GD_HANNING,
+  'mitchell'            => GD_MITCHELL,
   'nearest_neighbour'   => GD_NEAREST_NEIGHBOUR,
-  # 'power'               => GD_POWER,
-  # 'quadratic'           => GD_QUADRATIC,
-  # 'sinc'                => GD_SINC,
-  # 'triangle'            => GD_TRIANGLE,
-  'weighted4'           => GD_WEIGHTED4,
+  'power'               => GD_POWER,
+  'quadratic'           => GD_QUADRATIC,
+  'sinc'                => GD_SINC,
+  'triangle'            => GD_TRIANGLE,
+  #'weighted4'           => GD_WEIGHTED4,
 }
 
 
@@ -110,7 +110,7 @@ end
 
 def main
   truecolor = false
-  mode = 'bilinear_fixed' #GD_BILINEAR_FIXED
+  mode = 'bicubic'
 
   OptionParser.new do |opts|
     opts.banner = "Usage: #{__FILE__} <filename> <width> ..."

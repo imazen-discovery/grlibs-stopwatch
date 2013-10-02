@@ -100,7 +100,7 @@ end
 
 def main
   truecolor = false
-  mode = 'bilinear_fixed' #GD_BILINEAR_FIXED
+  mode = 'bicubic' #GD_BILINEAR_FIXED
 
   OptionParser.new do |opts|
     opts.banner = "Usage: #{__FILE__} <filename> <width> ..."
