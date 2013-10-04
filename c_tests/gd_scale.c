@@ -35,13 +35,13 @@ save(gdImagePtr img, int pass, const char *template, const char *extra,
     char oname[255];
     FILE *outfile;
 
-    snprintf(oname, sizeof(oname), "%s%s-%d-%d.jpg", template, extra, pass, 
+    snprintf(oname, sizeof(oname), "%s%s-%d-%d.png", template, extra, pass, 
              width);
 
     outfile = fopen(oname, "w");
     check(!!outfile, "Unable to open '%s' for writing.", oname);
 
-    gdImageJpeg(img, outfile, 100);
+    gdImagePng(img, outfile);
 
     fclose(outfile);
 }/* save*/
@@ -106,7 +106,7 @@ main(int argc, char *argv[]) {
         check(!!in, "Error opening '%s'", ifile);
 
         timer_start(ifile, "loading...");
-        im = gdImageCreateFromJpeg(in);
+        im = gdImageCreateFromPng(in);
         check(!!im, "Error creating input image object.");
         timer_done();
 
