@@ -2,6 +2,7 @@
 #include <time.h>
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdarg.h>
 
 #include "util.h"
@@ -14,8 +15,7 @@ struct Times {
 };
 
 
-#define MAXTIMES 60
-struct Times times[100];
+struct Times *times = NULL;
 unsigned current = 0;
 
 static clock_t last_time;
@@ -25,6 +25,9 @@ timer_start(const char *file, const char *descfmt, ...) {
     va_list ap;
 
     va_start(ap, descfmt);
+
+    times = realloc(times, sizeof(struct Times)* (current + 1));
+    check(!!times, "realloc failed!\n");
 
     last_time = clock();
     times[current].file = file;
@@ -41,7 +44,6 @@ timer_done() {
 
     times[current].elapsed = now - last_time;
     ++current;
-    assert(current < MAXTIMES);
 }/* timer_done*/
 
 
