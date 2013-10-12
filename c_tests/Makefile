@@ -7,8 +7,9 @@ CFLAGS=-Wall -O -g `pkg-config $(VIPS) --cflags` `pkg-config gdlib --cflags`
 
 LD=gcc
 LDFLAGS=-g
-VIPSLIBS=`pkg-config $(VIPS) --libs`
-GDLIBS=`pkg-config gdlib --libs` -lm
+VIPSLIBS=`pkg-config $(VIPS) --libs` -lrt
+GDLIBS=`pkg-config gdlib --libs` -lm -lrt
+
 
 all: vips_shrink stats benchmark gd_scale
 
@@ -30,4 +31,4 @@ util.o: util.c
 
 
 clean:
-	-rm *.o vips_shrink stats benchmark
+	-rm *.o vips_shrink stats benchmark gd_scale
