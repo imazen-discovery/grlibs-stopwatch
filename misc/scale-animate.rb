@@ -38,7 +38,7 @@ def animate(start, stop, incr, img, useGD)
   flist = ffiles.join(' ')
   puts "converting..."
   `convert -delay 10 #{flist} #{useGD ? 'gd' : 'im'}-scale.gif`
-exit 0
+
   puts "Deleting..."
   `rm #{flist}`
 end
