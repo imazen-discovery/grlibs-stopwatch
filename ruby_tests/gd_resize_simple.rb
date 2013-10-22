@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 # Simplified version of gd_resize.rb that resizes one image.
-
+require 'pry'  # DEBUG! REMOVE!
 require 'rubygems'
 
 require 'optparse'
@@ -53,6 +53,8 @@ def shrink(imgfile, width, height, output, truecolor, modeName)
     im = im.to_true_color()
   end
 
+  # Zero or invalid height means preserve aspect ratio
+  height = ( (im.height * width.to_f) / im.width ).round if height <= 0
 
   im.interpolation_method = mode
   raise "Unable to set interpolation mode." unless 
@@ -61,8 +63,6 @@ def shrink(imgfile, width, height, output, truecolor, modeName)
   raise "Invalid dimension: #{width}x#{height}" unless
     width > 0 && height > 0
   
-#  destHeight = ( (im.height * width.to_f) / im.width ).round
-
   result = im.resizeInterpolated(width, height)
 
   moveOldFile(output)
@@ -124,7 +124,15 @@ def main
     exit 1
   end
 
-  shrink ARGV[0], ARGV[1].to_i, ARGV[2].to_i, ARGV[3], truecolor, mode
+  w = ARGV[1].to_i
+  if w == 0
+    puts "Invalid width: #{w}"
+    exit 1
+  end
+
+  h = ARGV[2].to_i      # <= 0 means compute from width
+
+  shrink ARGV[0], w, h, ARGV[3], truecolor, mode
 end
 
 
