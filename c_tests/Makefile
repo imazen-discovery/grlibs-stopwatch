@@ -13,7 +13,7 @@ GDLIBS=`pkg-config gdlib --libs` -lm -lrt
 
 all: vips_shrink stats benchmark gd_scale
 
-vips_shrink: vips_shrink.o timer.o util.o
+vips_shrink: vips_shrink2.o timer.o util.o
 	$(LD) $(LDFLAGS) -o $@ $^ $(VIPSLIBS)  
 
 stats: stats.o timer.o util.o
